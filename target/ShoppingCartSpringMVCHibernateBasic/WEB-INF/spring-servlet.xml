@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:component-scan
+		base-package="com.kyanja"></context:component-scan>
+
+	<mvc:annotation-driven />
+
+	<!-- Specifying the Resource location to load JS, CSS, Images etc -->
+	<mvc:resources mapping="/resources/**"
+		location="/resources/" cache-period="31556926" />
+	<!-- View Resolver -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- Configuration Upload -->
+
+	<bean name="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10000000"></property>
+	</bean>
+
+<!-- 	<bean id="messageSource" -->
+<!-- 		class="org.springframework.context.support.ResourceBundleMessageSource" -->
+<!-- 		p:basename="messages" /> -->
+
+         <!-- Storage area setting information SessionLocaleResolver class stores the regionalization information in the session through a predefined session name. Determine the user language defaultLocale from the session.
+             :Default language -->
+        <bean id="localeResolver"
+              class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+            <property name="defaultLocale" value="en_US" />
+        </bean>
+     
+             <!-- Internationalized resource file messageSource is configured with the path of the internationalized resource file, classpath:messages refers to the path under the classpath
+                     The messages_zh_CN.properties file and the messages_en_US.properties file set "useCodeAsDefaultMessage", the default is false, so when Spring can't find the messageKey in the ResourceBundle, it throws a NoSuchMessageException.
+                     Setting it to True will not throw an exception, but use messageKey as the return value. -->
+        <bean id="messageSource"
+              class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+            <property name="defaultEncoding" value="UTF-8" />
+            <property name="useCodeAsDefaultMessage" value="true" />
+            <property name="fallbackToSystemLocale" value="false" />
+            <property name="basenames">
+                <list>
+                    <!--<value>classpath:resource/message</value>-->
+                    <value>classpath:messages</value>
+                    <value>classpath:jasper/localization/i18n_en</value>
+                    <value>classpath:jasper/localization/i18n_fr</value>
+                    <value>classpath:jasper/localization/i18n</value>
+                </list>
+            </property>
+        </bean>
+             <!--The interceptor intercepts the HTTP request with a parameter named "lang", which resets the localization information of the page -->
+        <mvc:interceptors>
+            <bean id="localeChangeInterceptor"
+                  class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+                <property name="paramName" value="lang" />
+            </bean>
+        </mvc:interceptors>
+    
+
+	<tx:annotation-driven />
+</beans>  

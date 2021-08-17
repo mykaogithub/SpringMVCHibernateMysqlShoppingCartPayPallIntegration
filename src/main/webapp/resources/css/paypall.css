@@ -1,0 +1,9 @@
+.payment-secure-logo {
+display: block;
+height: auto; 
+width: auto; 
+max-width: 300px;
+max-height: 300px;
+}
+
+.payment-secure-logo table img{width:100%}
